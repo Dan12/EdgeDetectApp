@@ -13,7 +13,7 @@ public class NumberSlider implements MenuItem{
     private float maxVal;
     private boolean intValue;
 
-    public NumberSlider(){
+    public NumberSlider(int x, int y){
 
     }
 
