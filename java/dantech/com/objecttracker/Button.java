@@ -6,6 +6,8 @@ import android.view.MotionEvent;
 
 public class Button implements MenuItem {
 
+    //TODO: add placement, touch, and draw code
+
     private int val;
     private Paint paint  = new Paint();
     private String name;
@@ -25,7 +27,7 @@ public class Button implements MenuItem {
     }
 
     @Override
-    public int getValue() {
+    public float getValue() {
         return 0;
     }
 }

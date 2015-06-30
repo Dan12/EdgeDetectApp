@@ -3,7 +3,7 @@ package dantech.com.objecttracker;
 import dantech.com.objecttracker.ObjectDetector;
 
 public class Functions {
-    private static int[][] pointerNum = new int[][]{
+    private static int[][] pointerNums = new int[][]{
             {1,-1},
             {1,0},
             {1,1},
@@ -28,14 +28,18 @@ public class Functions {
         return new int[]{(input) & 0xff, (input >> 8) & 0xff, (input >> 16) & 0xff};
     }
 
-    public static int[] nextPos(int[] vals, int r, int c, int[] targ, int w, int h){
+    public static int[] nextPos(int[] vals, int r, int c, int[] targ, int w, int h, int p){
+        //TODO: possible bug, not finding next pos in irregular shapes, probably not tolerance issue, probably in seenOpenPixel part
         boolean seenOpenPixel = false;
         int pointerNum = 0;
         int[] ret = new int[]{r,c};
         for(int i = 0; i < 8; i++){
-            int[] pointer = mapPointerNum(i,0);
-            if(inBounds(vals,r+pointer[1],c+pointer[0], w, h) && vals[(r+pointer[1])*w+(c+pointer[0])] != -1 && !isInTolerance(vals[(r+pointer[1])*w+(c+pointer[0])], targ)){
-                pointerNum = i;
+            int[] pointer = mapPointerNum(i,p);
+            boolean isInBounds = inBounds(r+pointer[1],c+pointer[0], w, h);
+            if(!isInBounds || (isInBounds && (vals[(r+pointer[1])*w+(c+pointer[0])] == -1 || !isInTolerance(vals[(r+pointer[1])*w+(c+pointer[0])], targ)))){
+                pointerNum = i+p+1;
+                if(pointerNum > 7)
+                    pointerNum-=8;
                 seenOpenPixel = true;
                 break;
             }
@@ -43,8 +47,10 @@ public class Functions {
         if(seenOpenPixel){
             for(int i = 0; i < 8; i++){
                 int[] pointer = mapPointerNum(i,pointerNum);
-                if(inBounds(vals,r+pointer[1],c+pointer[0], w, h) && vals[(r+pointer[1])*w+(c+pointer[0])] != -1 && isInTolerance(vals[(r+pointer[1])*w+(c+pointer[0])], targ)){
-                    ret = new int[]{r+pointer[1],c+pointer[0]};
+                if(inBounds(r+pointer[1],c+pointer[0], w, h) && vals[(r+pointer[1])*w+(c+pointer[0])] != -1 && (vals[(r+pointer[1])*w+(c+pointer[0])] == -2 || isInTolerance(vals[(r+pointer[1])*w+(c+pointer[0])], targ))){
+                    ret = new int[]{r+pointer[1],c+pointer[0],i+pointerNum};
+                    if(vals[(r+pointer[1])*w+(c+pointer[0])] == -2)
+                        vals[(r+pointer[1])*w+(c+pointer[0])] = -3;
                     break;
                 }
             }
@@ -52,7 +58,11 @@ public class Functions {
         return ret;
     }
 
-    private static boolean inBounds(int[] input, int r, int c, int w, int h){
+    public static double map(double x, double in_min, double in_max, double out_min, double out_max){
+        return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+
+    private static boolean inBounds(int r, int c, int w, int h){
         return (r >= 0 && r < h && c >= 0 && c < w);
     }
 
@@ -61,6 +71,6 @@ public class Functions {
         int test = s+i;
         if(test > 7)
             test -= 8;
-        return pointerNum[test];
+        return pointerNums[test];
     }
 }

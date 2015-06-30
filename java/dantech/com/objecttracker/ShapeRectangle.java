@@ -12,7 +12,7 @@ public class ShapeRectangle {
     private int maxX;
     private int maxY;
     private Random rnd;
-    private int density;
+    private float density;
     private Paint paint = new Paint();
 
     public ShapeRectangle(){
@@ -29,7 +29,7 @@ public class ShapeRectangle {
         canvas.drawRect(minX*ObjectDetector.resolution, minY*ObjectDetector.resolution, (maxX + 1) * ObjectDetector.resolution, (maxY + 1) * ObjectDetector.resolution, paint);
         paint.setTextSize(20);
         paint.setColor(Color.BLACK);
-        canvas.drawText(String.format("%.2f", ((float)density)/getArea()), minX*ObjectDetector.resolution+4, maxY*ObjectDetector.resolution-4, paint);
+        canvas.drawText(String.format("%.2f", getDensity()), minX*ObjectDetector.resolution+4, maxY*ObjectDetector.resolution-4, paint);
     }
 
     public void newPoint(int[] p){
@@ -40,7 +40,8 @@ public class ShapeRectangle {
     }
 
     private float getDensity(){
-        return ((float)density)/getArea();
+        //return ((float)density)/getArea();
+        return density;
     }
 
     private int getArea(){
@@ -71,7 +72,7 @@ public class ShapeRectangle {
             maxY = m;
     }
 
-    public void setDensity(int d){
+    public void setDensity(float d){
         density = d;
     }
 
@@ -89,6 +90,22 @@ public class ShapeRectangle {
 
     public int getMaxY(){
         return maxY;
+    }
+
+    public int getWidth(){
+        return maxX-minX;
+    }
+
+    public int getHeight(){
+        return maxY-minY;
+    }
+
+    public int getCheckHeight(){
+        return (getHeight()/ObjectDetector.shapeDensCheck)+1;
+    }
+
+    public int getCheckWidth(){
+        return (getWidth()/ObjectDetector.shapeDensCheck)+1;
     }
 
     public int getCenterX(){

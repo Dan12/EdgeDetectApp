@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 public class EdgeDetect {
 
+        /*TODO: possible edge detect bug, not always getting entire shape when there are bumps,
+        * not a tolerance issue
+        */
+
         public static ArrayList<ShapeRectangle> runRoutine(int[] vals, int[] targ, int w, int h) {
             ArrayList<ShapeRectangle> ret = new ArrayList<ShapeRectangle>();
             //System.out.println("Running edge detect routine...");
@@ -18,9 +22,10 @@ public class EdgeDetect {
                         ShapeRectangle temp = new ShapeRectangle();
                         temp.newPoint(curPos);
                         boolean validShape = true;
+                        int startPointer = 0;
                         while (true) {
                             ///System.out.println(curPos[0]+","+curPos[1]);
-                            int[] newPos = Functions.nextPos(vals, curPos[0], curPos[1], targ, w, h);
+                            int[] newPos = Functions.nextPos(vals, curPos[0], curPos[1], targ, w, h, startPointer);
                             if (newPos[0] == initEdge[0] && newPos[1] == initEdge[1]) {
                                 //System.out.println("Success");
                                 break;
@@ -29,19 +34,31 @@ public class EdgeDetect {
                                 //System.out.println("Didn't Close");
                                 break;
                             }
-                            curPos = newPos;
-                            vals[curPos[0] * w + curPos[1]] = -1;
+                            curPos = new int[]{newPos[0],newPos[1]};
+                            if(vals[curPos[0]*w+curPos[1]] != -3)
+                                vals[curPos[0]*w+curPos[1]] = -2;
                             temp.newPoint(curPos);
+                            startPointer = newPos[2]-1;
+                            if(startPointer < 0)
+                                startPointer+=8;
+                            if(startPointer > 7)
+                                startPointer-=8;
                         }
                         int density = 0;
-                        for (int rr = temp.getMinY(); rr <= temp.getMaxY(); rr++) {
-                            for (int cc = temp.getMinX(); cc <= temp.getMaxX(); cc++) {
+                        int timesChecked = 0;
+                        for (int rr = temp.getMinY()+temp.getCheckHeight(); rr <= temp.getMaxY()-temp.getCheckHeight(); rr+=temp.getCheckHeight()) {
+                            for (int cc = temp.getMinX()+temp.getCheckWidth(); cc <= temp.getMaxX()-temp.getCheckWidth(); cc+=temp.getCheckWidth()) {
                                 if (vals[rr * w + cc] != -1 && Functions.isInTolerance(vals[rr * w + cc], targ))
                                     density++;
-                                vals[rr * w + cc] = -1;
+                                timesChecked++;
                             }
                         }
-                        temp.setDensity(density);
+                        for (int rr = temp.getMinY(); rr <= temp.getMaxY(); rr++) {
+                            for (int cc = temp.getMinX(); cc <= temp.getMaxX(); cc++) {
+                                vals[rr*w+cc] = -1;
+                            }
+                        }
+                        temp.setDensity(((float)density)/timesChecked);
                         if (validShape && temp.isValid()) {
                             //System.out.println("Added");
                             ret.add(temp);

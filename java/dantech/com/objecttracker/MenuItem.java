@@ -5,9 +5,11 @@ import android.view.MotionEvent;
 
 public interface MenuItem {
 
+    int textSize = 34;
+
     public void drawItem(Canvas canvas);
 
     public void touchItem(MotionEvent e);
 
-    public int getValue();
+    public float getValue();
 }

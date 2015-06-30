@@ -43,6 +43,7 @@ public class Launcher extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        surfaceView.touchEvents(e);
         if(e.getAction() == MotionEvent.ACTION_DOWN){
             surfaceView.getObjectDetector().touchDown(e);
         }

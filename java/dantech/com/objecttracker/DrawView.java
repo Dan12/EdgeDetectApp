@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -51,9 +52,9 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
         if(bmp != null)
             canvas.drawBitmap(bmp,0,0,null);
         objectDetector.drawObjectDetector(canvas);
-        menu.drawMenu(canvas);
+        menu.drawMenu(canvas, screenWidth, screenHeight);
         long et = System.nanoTime();
-        System.out.println("Drawing and Computations completed in "+((et-st)/1000000)+"ms");
+        System.out.println("Drawing and Computations completed in " + ((et - st) / 1000000) + "ms");
         invalidate();
     }
 
@@ -148,6 +149,10 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
     public void setScreenDims(int w, int h){
         screenWidth = w;
         screenHeight = h;
+    }
+
+    public void touchEvents(MotionEvent e){
+        menu.touched(e);
     }
 
     public ObjectDetector getObjectDetector(){
