@@ -1,0 +1,101 @@
+package dantech.com.objecttracker;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import java.util.Random;
+
+public class ShapeRectangle {
+
+    private int minX;
+    private int minY;
+    private int maxX;
+    private int maxY;
+    private Random rnd;
+    private int density;
+    private Paint paint = new Paint();
+
+    public ShapeRectangle(){
+        minX = Integer.MAX_VALUE;
+        minY = Integer.MAX_VALUE;
+        maxX = Integer.MIN_VALUE;
+        maxY = Integer.MIN_VALUE;
+        rnd = new Random();
+        density = 0;
+    }
+
+    public void drawSquare(Canvas canvas){
+        paint.setARGB(100, rnd.nextInt(200), rnd.nextInt(200), rnd.nextInt(200));
+        canvas.drawRect(minX*ObjectDetector.resolution, minY*ObjectDetector.resolution, (maxX + 1) * ObjectDetector.resolution, (maxY + 1) * ObjectDetector.resolution, paint);
+        paint.setTextSize(20);
+        paint.setColor(Color.BLACK);
+        canvas.drawText(String.format("%.2f", ((float)density)/getArea()), minX*ObjectDetector.resolution+4, maxY*ObjectDetector.resolution-4, paint);
+    }
+
+    public void newPoint(int[] p){
+        setMinX(p[1]);
+        setMinY(p[0]);
+        setMaxX(p[1]);
+        setMaxY(p[0]);
+    }
+
+    private float getDensity(){
+        return ((float)density)/getArea();
+    }
+
+    private int getArea(){
+        return (maxX-minX)*(maxY-minY);
+    }
+
+    public boolean isValid(){
+        return (maxX-minX > ObjectDetector.minShapeDim && maxY-minY > ObjectDetector.minShapeDim && getDensity() > ObjectDetector.minShapeDensity);
+    }
+
+    private void setMinX(int m){
+        if(m < minX)
+            minX = m;
+    }
+
+    private void setMinY(int m){
+        if(m < minY)
+            minY = m;
+    }
+
+    private void setMaxX(int m){
+        if(m > maxX)
+            maxX = m;
+    }
+
+    private void setMaxY(int m){
+        if(m > maxY)
+            maxY = m;
+    }
+
+    public void setDensity(int d){
+        density = d;
+    }
+
+    public int getMinX(){
+        return minX;
+    }
+
+    public int getMinY(){
+        return minY;
+    }
+
+    public int getMaxX(){
+        return maxX;
+    }
+
+    public int getMaxY(){
+        return maxY;
+    }
+
+    public int getCenterX(){
+        return (minX+(maxX-minX)/2)*ObjectDetector.resolution;
+    }
+
+    public int getCenterY(){
+        return (minX+(maxX-minX)/2)*ObjectDetector.resolution;
+    }
+}
