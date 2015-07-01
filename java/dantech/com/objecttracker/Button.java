@@ -62,4 +62,9 @@ public class Button implements MenuItem {
     public float getValue() {
         return val;
     }
+
+    @Override
+    public void setValue(float v) {
+        val = Math.round(v);
+    }
 }

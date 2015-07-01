@@ -16,6 +16,7 @@ public class Menu {
     private int xOffset;
     private int yOffset;
     private boolean menuOpen;
+    private boolean openBluetooth;
 
     public Menu(int x, int y, int d){
         xIconPos = x;
@@ -27,11 +28,13 @@ public class Menu {
         menuItems.add(new NumberSlider("Tolerance",10,90,35,true,100,50,150,50));
         menuItems.add(new NumberSlider("Resolution",1,16,4,true,100,175,150,50));
         menuItems.add(new NumberSlider("Min Shape Dim",1,40,4,true,100,300,150,50));
-        menuItems.add(new NumberSlider("Min Shape Dens",0,1,0.5f,false,300,50,150,50));
-        menuItems.add(new NumberSlider("Shape Dens Check",1,16,10,true,300,175,150,50));
-        menuItems.add(new NumberSlider("Zoom",1,30,1,true,300,300,150,50));
-        menuItems.add(new Button("Exit Menu",100,414,false));
+        menuItems.add(new NumberSlider("Min Shape Dens",0,1,0.5f,false,350,50,150,50));
+        menuItems.add(new NumberSlider("Shape Dens Check", 1, 16, 10, true, 350, 175, 150, 50));
+        menuItems.add(new NumberSlider("Zoom", 1, 30, 1, true, 350, 300, 150, 50));
+        menuItems.add(new Button("Exit Menu", 100, 414, false));
+        menuItems.add(new Button("Open BT", 350, 414, false));
         menuOpen = false;
+        openBluetooth = false;
     }
 
     private void drawMenuIcon(Canvas canvas){
@@ -40,7 +43,7 @@ public class Menu {
         paint.setColor(Color.LTGRAY);
         canvas.drawRect(xIconPos + xOffset, yIconPos + yOffset / 2, xIconPos + iconDim - xOffset, yIconPos + yOffset / 2 + yOffset, paint);
         canvas.drawRect(xIconPos + xOffset, yIconPos + yOffset * 2, xIconPos + iconDim - xOffset, yIconPos + yOffset * 3, paint);
-        canvas.drawRect(xIconPos+xOffset, yIconPos+yOffset*3 +yOffset/2, xIconPos + iconDim-xOffset, yIconPos + yOffset*4 +yOffset/2, paint);
+        canvas.drawRect(xIconPos + xOffset, yIconPos + yOffset * 3 + yOffset / 2, xIconPos + iconDim - xOffset, yIconPos + yOffset * 4 + yOffset / 2, paint);
     }
 
     public void drawMenu(Canvas canvas, int sw, int sh){
@@ -60,7 +63,7 @@ public class Menu {
             }
         }
         else{
-            //0-tolerance, 1-resolution, 2-Min Dim, 3-Min Dens, 4-Dens Check, 5-zoom, 6-exit
+            //0-tolerance, 1-resolution, 2-Min Dim, 3-Min Dens, 4-Dens Check, 5-zoom, 6-exit, 7-bluetooth
             for(int i = 0; i < menuItems.size(); i++){
                 if(menuItems.get(i).touchItem(e)){
                     switch(i){
@@ -85,6 +88,12 @@ public class Menu {
                         case 6:
                             closeMenu();
                             break;
+                        case 7:
+                            if(menuItems.get(7).getValue() == 0){
+                                openBluetooth = true;
+                                menuItems.get(7).setValue(1);
+                            }
+                            break;
                     }
                 }
             }
@@ -96,7 +105,19 @@ public class Menu {
         menuOpen = false;
     }
 
-    public boolean isOpen(){
+    public boolean isOpen() {
         return menuOpen;
+    }
+
+    public void btDone(){
+        menuItems.get(7).setValue(0);
+    }
+
+    public boolean openBluetooth(){
+        if(openBluetooth){
+            openBluetooth = false;
+            return true;
+        }
+        return false;
     }
 }

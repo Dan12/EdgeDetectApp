@@ -12,4 +12,6 @@ public interface MenuItem {
     public boolean touchItem(MotionEvent e);
 
     public float getValue();
+
+    public void setValue(float v);
 }

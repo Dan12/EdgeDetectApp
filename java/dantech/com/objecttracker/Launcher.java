@@ -8,12 +8,14 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.IOException;
 
 public class Launcher extends Activity {
 
-    private DrawView surfaceView;
+    private DrawView drawView;
+    private BluetoothHandler bt;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,11 +28,11 @@ public class Launcher extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         RelativeLayout mRelativeLayout = new RelativeLayout(this);
-        surfaceView = new DrawView(this, null);
-        surfaceView.setBackgroundColor(Color.WHITE);
+        drawView = new DrawView(this, null);
+        drawView.setBackgroundColor(Color.WHITE);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        surfaceView.setLayoutParams(layoutParams);
-        mRelativeLayout.addView(surfaceView);
+        drawView.setLayoutParams(layoutParams);
+        mRelativeLayout.addView(drawView);
         setContentView(mRelativeLayout);
 
         DisplayMetrics dm = new DisplayMetrics();
@@ -38,25 +40,38 @@ public class Launcher extends Activity {
         int width=dm.widthPixels;
         int height=dm.heightPixels;
         System.out.println(width + " , " + height);
-        surfaceView.setScreenDims(width, height);
+        drawView.setScreenDims(width, height);
+
+        bt = new BluetoothHandler(this);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if(e.getAction() == MotionEvent.ACTION_DOWN && !surfaceView.menuOpen()){
-            surfaceView.getObjectDetector().touchDown(e);
+        if(e.getAction() == MotionEvent.ACTION_DOWN && !drawView.menuOpen()){
+            drawView.getObjectDetector().touchDown(e);
         }
-        surfaceView.touchEvents(e);
+        drawView.touchEvents(e);
+        if(drawView.getMenu().openBluetooth()){
+            Toast.makeText(getApplicationContext(), "Nullifying Current Stream", Toast.LENGTH_SHORT).show();
+            if(bt.canStartBT())
+                bt.findBT();
+            else
+                drawView.getMenu().btDone();
+        }
         return true;
+    }
+
+    public DrawView getDrawView(){
+        return drawView;
     }
 
     protected void onDestroy(){
         System.out.println("Destroyed");
         super.onDestroy();
         System.out.println(isFinishing());
-//        try {
-//            closeBT();
-//        } catch (IOException e) {e.printStackTrace();}
+        try {
+            bt.closeBT();
+        } catch (IOException e) {e.printStackTrace();}
         finish();
     }
 

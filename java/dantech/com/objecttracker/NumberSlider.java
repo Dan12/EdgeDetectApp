@@ -76,4 +76,7 @@ public class NumberSlider implements MenuItem{
     public float getValue() {
         return val;
     }
+
+    @Override
+    public void setValue(float v) {}
 }

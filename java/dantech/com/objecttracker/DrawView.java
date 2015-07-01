@@ -29,6 +29,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
     private Menu menu;
     private int screenWidth;
     private int screenHeight;
+    private boolean sendData = false;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context);
@@ -50,6 +51,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
             bmp = Bitmap.createScaledBitmap(Bitmap.createBitmap(rgbints, 0, width / ObjectDetector.resolution, width / ObjectDetector.resolution, height / ObjectDetector.resolution, Bitmap.Config.RGB_565),width,height,false);
             objectDetector.setDims(width/res,height/res);
             objectDetector.updateRoutine(rgbints);
+            sendData = true;
         }
         if(bmp != null)
             canvas.drawBitmap(bmp,0,0,null);
@@ -165,6 +167,19 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
 
     public boolean menuOpen(){
         return menu.isOpen();
+    }
+
+    public Menu getMenu(){
+        return menu;
+    }
+
+    public boolean canSendData(){
+        return sendData;
+    }
+
+    public int getCenterX(){
+        sendData = false;
+        return 0;
     }
 
     public ObjectDetector getObjectDetector(){
