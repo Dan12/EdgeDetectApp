@@ -38,10 +38,8 @@ public class EdgeDetect {
                             if(vals[curPos[0]*w+curPos[1]] != -3)
                                 vals[curPos[0]*w+curPos[1]] = -2;
                             temp.newPoint(curPos);
-                            startPointer = newPos[2]-1;
-                            if(startPointer < 0)
-                                startPointer+=8;
-                            if(startPointer > 7)
+                            startPointer = newPos[2]+5;
+                            while(startPointer > 7)
                                 startPointer-=8;
                         }
                         int density = 0;

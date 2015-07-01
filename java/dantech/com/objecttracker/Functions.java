@@ -34,24 +34,33 @@ public class Functions {
         int pointerNum = 0;
         int[] ret = new int[]{r,c};
         for(int i = 0; i < 8; i++){
-            int[] pointer = mapPointerNum(i,p);
+            int[] pointer = mapPointerNum(i, p);
             boolean isInBounds = inBounds(r+pointer[1],c+pointer[0], w, h);
             if(!isInBounds || (isInBounds && (vals[(r+pointer[1])*w+(c+pointer[0])] == -1 || !isInTolerance(vals[(r+pointer[1])*w+(c+pointer[0])], targ)))){
                 pointerNum = i+p+1;
                 if(pointerNum > 7)
                     pointerNum-=8;
                 seenOpenPixel = true;
+                if(isInBounds)
+                    vals[(r+pointer[1])*w+(c+pointer[0])] = -1;
                 break;
             }
         }
         if(seenOpenPixel){
             for(int i = 0; i < 8; i++){
                 int[] pointer = mapPointerNum(i,pointerNum);
-                if(inBounds(r+pointer[1],c+pointer[0], w, h) && vals[(r+pointer[1])*w+(c+pointer[0])] != -1 && (vals[(r+pointer[1])*w+(c+pointer[0])] == -2 || isInTolerance(vals[(r+pointer[1])*w+(c+pointer[0])], targ))){
+                boolean isInBounds = inBounds(r+pointer[1],c+pointer[0], w, h);
+                boolean inTolerance = false;
+                if(isInBounds)
+                    inTolerance = isInTolerance(vals[(r+pointer[1])*w+(c+pointer[0])], targ);
+                if(isInBounds && vals[(r+pointer[1])*w+(c+pointer[0])] != -1 && (vals[(r+pointer[1])*w+(c+pointer[0])] == -2 || inTolerance)){
                     ret = new int[]{r+pointer[1],c+pointer[0],i+pointerNum};
                     if(vals[(r+pointer[1])*w+(c+pointer[0])] == -2)
                         vals[(r+pointer[1])*w+(c+pointer[0])] = -3;
                     break;
+                }
+                else if(isInBounds && !inTolerance){
+                    vals[(r+pointer[1])*w+(c+pointer[0])] = -1;
                 }
             }
         }
