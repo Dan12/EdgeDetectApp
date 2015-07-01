@@ -44,9 +44,11 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
         System.out.println("Draw and Compute");
         long st = System.nanoTime();
         if(yuvData != null) {
-            int[] rgbints = YUVDecoder.decodeYUV(yuvData, width, height);
+            int res = ObjectDetector.resolution;
+            int[] rgbints = YUVDecoder.decodeYUV(yuvData, width, height, res);
             yuvData = null;
             bmp = Bitmap.createScaledBitmap(Bitmap.createBitmap(rgbints, 0, width / ObjectDetector.resolution, width / ObjectDetector.resolution, height / ObjectDetector.resolution, Bitmap.Config.RGB_565),width,height,false);
+            objectDetector.setDims(width/res,height/res);
             objectDetector.updateRoutine(rgbints);
         }
         if(bmp != null)
@@ -152,7 +154,17 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
     }
 
     public void touchEvents(MotionEvent e){
-        menu.touched(e);
+        menu.touched(e, this);
+    }
+
+    public void setZoom(int v){
+        Camera.Parameters p = mCamera.getParameters();
+        p.setZoom(v);
+        mCamera.setParameters(p);
+    }
+
+    public boolean menuOpen(){
+        return menu.isOpen();
     }
 
     public ObjectDetector getObjectDetector(){

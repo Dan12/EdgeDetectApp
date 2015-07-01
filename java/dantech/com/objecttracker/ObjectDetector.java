@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class ObjectDetector {
 
-    public static int resolution = 8;
-    public static short tolerance = 35;
+    public static int resolution = 4;
+    public static int tolerance = 35;
     public static int minShapeDim = 4;
     public static float minShapeDensity = 0.5f;
     public static int shapeDensCheck = 10;

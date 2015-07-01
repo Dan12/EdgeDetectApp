@@ -2,17 +2,17 @@ package dantech.com.objecttracker;
 
 public class YUVDecoder {
 
-    public static int[] decodeYUV(byte[] fg, int width, int height) {
+    public static int[] decodeYUV(byte[] fg, int width, int height, int res) {
         long st = System.nanoTime();
         int sz = width*height;
         int[] ret = new int[(width/ObjectDetector.resolution) * (height/ObjectDetector.resolution)];
         int i, j;
         int Y, Cr = 0, Cb = 0;
         int rgbPix = 0;
-        for (j = 0; j < height; j+=ObjectDetector.resolution) {
+        for (j = 0; j < height-(height%ObjectDetector.resolution); j+=ObjectDetector.resolution) {
             int pixPtr = j * width;
             final int jDiv2 = j >> 1;
-            for (i = 0; i < width; i+=ObjectDetector.resolution) {
+            for (i = 0; i < width-(width%ObjectDetector.resolution); i+=ObjectDetector.resolution) {
                 Y = fg[pixPtr];
                 if (Y < 0)
                     Y += 255;

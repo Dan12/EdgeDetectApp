@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class EdgeDetect {
 
         /*TODO: possible edge detect bug, not always getting entire shape when there are bumps,
-        * not a tolerance issue
+        * probably not a tolerance issue
         */
 
         public static ArrayList<ShapeRectangle> runRoutine(int[] vals, int[] targ, int w, int h) {

@@ -21,9 +21,11 @@ public class NumberSlider implements MenuItem{
     private int sliderX;
     private int padding = 4;
 
-    public NumberSlider(String t, int mi, int ma, int def, boolean i, int x, int y, int w, int h){
+    public NumberSlider(String t, int mi, int ma, float def, boolean i, int x, int y, int w, int h){
         minVal = mi;
-        maxVal = ma+1;
+        maxVal = ma;
+        if(i)
+           ma++;
         if(def < minVal || def > maxVal-1)
             val = (minVal+maxVal)/2;
         else
@@ -58,14 +60,16 @@ public class NumberSlider implements MenuItem{
     }
 
     @Override
-    public void touchItem(MotionEvent e) {
+    public boolean touchItem(MotionEvent e) {
         if(e.getX() >= xPos && e.getX() <= xPos+width && e.getY() >= yPos && e.getY() <= yPos+height){
             if(intValue)
                 val = (int) Functions.map(e.getX(), xPos, xPos + width, minVal, maxVal);
             else
                 val = (float) Functions.map(e.getX(), xPos, xPos + width, minVal, maxVal);
             sliderX = (int) e.getX();
+            return true;
         }
+        return false;
     }
 
     @Override

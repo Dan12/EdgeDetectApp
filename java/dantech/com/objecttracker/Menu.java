@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 public class Menu {
 
-    //TODO: menu touch: open and adjust items
-
     private int xIconPos;
     private int yIconPos;
     private int iconDim;
@@ -26,8 +24,13 @@ public class Menu {
         xOffset = d/6;
         yOffset = d/5;
         menuItems = new ArrayList<MenuItem>();
-        menuItems.add(new NumberSlider("Tolerance",10,60,35,true,100,100,150,50));
-        menuItems.add(new NumberSlider("Resolution",1,10,4,true,100,300,150,50));
+        menuItems.add(new NumberSlider("Tolerance",10,90,35,true,100,50,150,50));
+        menuItems.add(new NumberSlider("Resolution",1,16,4,true,100,175,150,50));
+        menuItems.add(new NumberSlider("Min Shape Dim",1,40,4,true,100,300,150,50));
+        menuItems.add(new NumberSlider("Min Shape Dens",0,1,0.5f,false,300,50,150,50));
+        menuItems.add(new NumberSlider("Shape Dens Check",1,16,10,true,300,175,150,50));
+        menuItems.add(new NumberSlider("Zoom",1,30,1,true,300,300,150,50));
+        menuItems.add(new Button("Exit Menu",100,414,false));
         menuOpen = false;
     }
 
@@ -50,16 +53,50 @@ public class Menu {
         }
     }
 
-    public void touched(MotionEvent e){
+    public void touched(MotionEvent e, DrawView drawView){
         if(!menuOpen){
             if(e.getX() >= xIconPos && e.getX() <= xIconPos+iconDim && e.getY() >= yIconPos && e.getY() <= yIconPos+iconDim){
                 menuOpen = true;
             }
         }
         else{
+            //0-tolerance, 1-resolution, 2-Min Dim, 3-Min Dens, 4-Dens Check, 5-zoom, 6-exit
             for(int i = 0; i < menuItems.size(); i++){
-                menuItems.get(i).touchItem(e);
+                if(menuItems.get(i).touchItem(e)){
+                    switch(i){
+                        case 0:
+                            ObjectDetector.tolerance = (int) menuItems.get(0).getValue();
+                            break;
+                        case 1:
+                            ObjectDetector.resolution = (int) menuItems.get(1).getValue();
+                            break;
+                        case 2:
+                            ObjectDetector.minShapeDim = (int) menuItems.get(2).getValue();
+                            break;
+                        case 3:
+                            ObjectDetector.minShapeDensity = menuItems.get(3).getValue();
+                            break;
+                        case 4:
+                            ObjectDetector.shapeDensCheck = (int) menuItems.get(4).getValue();
+                            break;
+                        case 5:
+                            drawView.setZoom((int) menuItems.get(5).getValue());
+                            break;
+                        case 6:
+                            closeMenu();
+                            break;
+                    }
+                }
             }
         }
+    }
+
+    private void closeMenu(){
+        System.out.println("Close");
+        menuOpen = false;
+    }
+
+    public boolean isOpen(){
+        return menuOpen;
     }
 }
