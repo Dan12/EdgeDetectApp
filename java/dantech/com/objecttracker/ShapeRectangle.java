@@ -14,6 +14,7 @@ public class ShapeRectangle {
     private Random rnd;
     private float density;
     private Paint paint = new Paint();
+    private boolean isBest = false;
 
     public ShapeRectangle(){
         minX = Integer.MAX_VALUE;
@@ -25,7 +26,10 @@ public class ShapeRectangle {
     }
 
     public void drawSquare(Canvas canvas){
-        paint.setARGB(100, rnd.nextInt(200), rnd.nextInt(200), rnd.nextInt(200));
+        if(!isBest)
+            paint.setARGB(100, rnd.nextInt(200), rnd.nextInt(200), rnd.nextInt(200));
+        else
+            paint.setARGB(100, 0, 255, 0);
         canvas.drawRect(minX*ObjectDetector.resolution, minY*ObjectDetector.resolution, (maxX + 1) * ObjectDetector.resolution, (maxY + 1) * ObjectDetector.resolution, paint);
         paint.setTextSize(20);
         paint.setColor(Color.BLACK);
@@ -39,9 +43,15 @@ public class ShapeRectangle {
         setMaxY(p[0]);
     }
 
+    public void best(){ isBest = true; }
+
     private float getDensity(){
         //return ((float)density)/getArea();
         return density;
+    }
+
+    public double getFitness(){
+        return 0.5*getArea()+0.5*density;
     }
 
     private int getArea(){

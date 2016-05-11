@@ -17,6 +17,7 @@ public class ObjectDetector {
     private int targetRow = -1;
     private int targetCol = -1;
     private ArrayList<ShapeRectangle> shapes;
+    private ShapeRectangle bestRect;
     private int width;
     private int height;
 
@@ -37,6 +38,16 @@ public class ObjectDetector {
             targetCol = -1;
         }
         shapes = EdgeDetect.runRoutine(rgb, target, width, height);
+        if(!shapes.isEmpty()) {
+            bestRect = shapes.get(0);
+            for (int i = 1; i < shapes.size(); i++)
+                if (shapes.get(i).getFitness() > bestRect.getFitness())
+                    bestRect = shapes.get(i);
+            bestRect.best();
+        }else{
+            bestRect = null;
+        }
+
         long et = System.nanoTime();
         System.out.println("Edge Detect run in "+((et-st)/1000000)+"ms");
     }
@@ -51,5 +62,9 @@ public class ObjectDetector {
             targetCol = ((int)e.getX())/ObjectDetector.resolution;
             targetRow = ((int)e.getY())/ObjectDetector.resolution;
         }
+    }
+
+    public ShapeRectangle getBestShapeRect(){
+        return bestRect;
     }
 }

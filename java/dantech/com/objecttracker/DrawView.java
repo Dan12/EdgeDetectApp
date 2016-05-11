@@ -179,7 +179,11 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
 
     public int getCenterX(){
         sendData = false;
-        return 0;
+        ShapeRectangle bestRect = objectDetector.getBestShapeRect();
+        if(bestRect != null)
+            return bestRect.getCenterX();
+        else
+            return 0;
     }
 
     public ObjectDetector getObjectDetector(){
