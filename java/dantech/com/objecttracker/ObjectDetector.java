@@ -38,6 +38,14 @@ public class ObjectDetector {
             targetCol = -1;
         }
         shapes = EdgeDetect.runRoutine(rgb, target, width, height);
+        setBestRect();
+
+        long et = System.nanoTime();
+        System.out.println("Edge Detect run in "+((et-st)/1000000)+"ms");
+    }
+
+    // TODO: incorporate previous position in fitness function
+    private void setBestRect(){
         if(!shapes.isEmpty()) {
             bestRect = shapes.get(0);
             for (int i = 1; i < shapes.size(); i++)
@@ -47,9 +55,6 @@ public class ObjectDetector {
         }else{
             bestRect = null;
         }
-
-        long et = System.nanoTime();
-        System.out.println("Edge Detect run in "+((et-st)/1000000)+"ms");
     }
 
     public void drawObjectDetector(Canvas canvas){

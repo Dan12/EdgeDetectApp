@@ -51,6 +51,7 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback, Cam
             bmp = Bitmap.createScaledBitmap(Bitmap.createBitmap(rgbints, 0, width / ObjectDetector.resolution, width / ObjectDetector.resolution, height / ObjectDetector.resolution, Bitmap.Config.RGB_565),width,height,false);
             objectDetector.setDims(width/res,height/res);
             objectDetector.updateRoutine(rgbints);
+            // TODO: add support for multiple color detection by making several objectDetector objects and passing them the rgbints array after they have been processed by the previous object detector
             sendData = true;
         }
         if(bmp != null)
