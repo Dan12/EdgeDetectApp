@@ -1,6 +1,9 @@
 package dantech.com.objecttracker;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -11,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class Launcher extends Activity {
 
@@ -73,6 +77,27 @@ public class Launcher extends Activity {
             bt.closeBT();
         } catch (IOException e) {e.printStackTrace();}
         finish();
+    }
+
+    public void launchBluetoothChooser(CharSequence[] devices, final Set<BluetoothDevice> pairedDevices){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Pick a device");
+        builder.setItems(devices, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                int k = 0;
+                for (BluetoothDevice device : pairedDevices) {
+                    if(i == k) {
+                        bt.tryConnection(device);
+                        break;
+                    }
+                    k++;
+                }
+
+            }
+        });
+
+        builder.show();
     }
 
 }

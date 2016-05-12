@@ -89,9 +89,9 @@ public class Menu {
                             closeMenu();
                             break;
                         case 7:
-                            if(menuItems.get(7).getValue() == 0){
+                            if(menuItems.get(7).getValue() == 0 && e.getAction() == MotionEvent.ACTION_DOWN){
                                 openBluetooth = true;
-                                menuItems.get(7).setValue(1);
+                                //menuItems.get(7).setValue(1);
                             }
                             break;
                     }

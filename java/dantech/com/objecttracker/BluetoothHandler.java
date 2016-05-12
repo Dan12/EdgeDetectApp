@@ -61,24 +61,7 @@ public class BluetoothHandler {
                 i++;
             }
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(launcher.getApplicationContext());
-            builder.setTitle("Pick a device");
-            builder.setItems(devices, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    int k = 0;
-                    for (BluetoothDevice device : pairedDevices) {
-                        if(i == k) {
-                            tryConnection(device);
-                            break;
-                        }
-                        k++;
-                    }
-
-                }
-            });
-
-            builder.show();
+            launcher.launchBluetoothChooser(devices, pairedDevices);
         }
     }
 
